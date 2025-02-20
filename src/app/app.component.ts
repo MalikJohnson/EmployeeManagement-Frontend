@@ -3,28 +3,32 @@ import { RouterOutlet } from '@angular/router';
 import { Employee } from './employee';
 import { EmployeeService } from './employee.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true, // Enable standalone mode
+  imports: [RouterOutlet, CommonModule], 
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] 
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
+  public employees: Employee[] = [];
+  public title = 'employeemanagementapp';
+  constructor(private employeeService: EmployeeService) {} 
+
   ngOnInit(): void {
     this.getEmployees();
   }
-  constructor(private employeeSerivce: EmployeeService){}
-  public employees: Employee[] = [];
 
   public getEmployees(): void {
-  this.employeeSerivce.getEmployees().subscribe(
-    (response: Employee[]) => {
-      this.employees = response;
-    },
-    (error: HttpErrorResponse) => {
-      alert(error.message);
-    }
-  );
+    this.employeeService.getEmployees().subscribe({
+      next: (response: Employee[]) => {
+        this.employees = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    });
   }
 }
