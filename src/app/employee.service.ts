@@ -9,20 +9,25 @@ import { Employee } from "./employee";
 export class EmployeeService {
     private apiServerUrl = ''; 
 
+    //inject HttpClient
     constructor(private http: HttpClient) { } 
 
+    //return all employees
     public getEmployees(): Observable<Employee[]> {
         return this.http.get<Employee[]>(`${this.apiServerUrl}/employee/all`);
     }
 
+    //return single employee
     public addEmployee(employee: Employee): Observable<Employee> {
         return this.http.post<Employee>(`${this.apiServerUrl}/employee/add`, employee);
     }
 
+    //update single employee
     public updateEmployee(employee: Employee): Observable<Employee> {
         return this.http.put<Employee>(`${this.apiServerUrl}/employee/update`, employee);
     }
 
+    //delete single employee
     public deleteEmployee(employeeId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiServerUrl}/employee/delete/${employeeId}`);
     }
