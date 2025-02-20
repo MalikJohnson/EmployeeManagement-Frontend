@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Employee } from './employee';
 import { EmployeeService } from './employee.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-root',
   standalone: true, // Enable standalone mode
-  imports: [RouterOutlet, CommonModule], 
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })
