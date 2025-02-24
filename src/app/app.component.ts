@@ -5,21 +5,34 @@ import { EmployeeService } from './employee.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms'; // Import NgForm
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // Import NgbModal
 
 @Component({
   selector: 'app-root',
   standalone: true, // Enable standalone mode
-  imports: [RouterOutlet, CommonModule, FormsModule], // Add FormsModule
+  imports: [RouterOutlet, CommonModule, FormsModule], 
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   public employees: Employee[] = [];
-  public editEmployee: Employee | null = null; // Add editEmployee property
-  public deleteEmployee: Employee | null = null; // Add deleteEmployee property
-  public searchKey: string = ''; 
+  public editEmployee: Employee | null = null; // Use null for editEmployee
+  public tempEmployee: Employee = {
+    id: 0,
+    name: '',
+    email: '',
+    phone: '',
+    jobTitle: '',
+    imageUrl: '',
+    employeeCode: ''
+  };
+  public deleteEmployee: Employee | null = null; 
+  public searchKey: string = '';
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(
+    private employeeService: EmployeeService,
+    private modalService: NgbModal 
+  ) {}
 
   ngOnInit(): void {
     this.getEmployees();
@@ -37,10 +50,8 @@ export class AppComponent implements OnInit {
   }
 
   public onAddEmloyee(addForm: NgForm): void {
-    document.getElementById('add-employee-form')?.click(); // Close the modal
     this.employeeService.addEmployee(addForm.value).subscribe({
       next: (response: Employee) => {
-        console.log(response);
         this.getEmployees(); // Refresh the employee list
         addForm.reset(); // Reset the form
       },
@@ -54,7 +65,6 @@ export class AppComponent implements OnInit {
   public onUpdateEmloyee(employee: Employee): void {
     this.employeeService.updateEmployee(employee).subscribe({
       next: (response: Employee) => {
-        console.log(response);
         this.getEmployees(); // Refresh the employee list
       },
       error: (error: HttpErrorResponse) => {
@@ -64,24 +74,31 @@ export class AppComponent implements OnInit {
   }
 
   public onDeleteEmloyee(employeeId: number | undefined): void {
+    // Check if employeeId is undefined
     if (employeeId === undefined) {
-      console.error('Employee ID is undefined');
+      alert('Employee ID is missing. Please try again.');
       return;
     }
   
+    // Call the deleteEmployee method from the service
     this.employeeService.deleteEmployee(employeeId).subscribe({
       next: (response: void) => {
-        console.log(response);
         this.getEmployees(); // Refresh the employee list
       },
       error: (error: HttpErrorResponse) => {
-        alert(error.message);
+        // Display error message
+        if (error.status === 404) {
+          alert('Employee not found. Please refresh the list and try again.');
+        } else if (error.status === 500) {
+          alert('Server error. Please try again later.');
+        } else {
+          alert('An unexpected error occurred. Please check the console for details.');
+        }
       }
     });
   }
 
   public searchEmployees(key: string): void {
-    console.log(key);
     const results: Employee[] = [];
     for (const employee of this.employees) {
       if (
@@ -99,23 +116,15 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public onOpenModal(employee: Employee | null, mode: string): void {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.style.display = 'none';
-    button.setAttribute('data-toggle', 'modal');
-
+  public onOpenModal(employee: Employee | null, mode: string, content: any): void {
     if (mode === 'add') {
-      button.setAttribute('data-target', '#addEmployeeModal');
+      this.modalService.open(content, { ariaLabelledBy: 'addEmployeeModalLabel' });
     } else if (mode === 'edit' && employee) {
-      this.editEmployee = employee; // Set the employee to edit
-      button.setAttribute('data-target', '#updateEmployeeModal');
+      this.tempEmployee = { ...employee }; // Copy employee data to tempEmployee
+      this.modalService.open(content, { ariaLabelledBy: 'updateEmployeeModalLabel' });
     } else if (mode === 'delete' && employee) {
-      this.deleteEmployee = employee; // Set the employee to delete
-      button.setAttribute('data-target', '#deleteEmployeeModal');
+      this.deleteEmployee = employee;
+      this.modalService.open(content, { ariaLabelledBy: 'deleteEmployeeModalLabel' });
     }
-
-    document.body.appendChild(button);
-    button.click();
   }
 }
