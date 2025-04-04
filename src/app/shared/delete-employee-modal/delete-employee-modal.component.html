@@ -1,0 +1,14 @@
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Confirm Deletion</h5>
+    <button type="button" class="btn-close btn-close-white" (click)="activeModal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{employee.name}}</strong>?</p>
+    <p class="text-danger">This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+     <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+      Delete Permanently
+    </button> 
+  </div>

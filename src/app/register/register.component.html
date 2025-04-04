@@ -1,0 +1,54 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">Register</h3>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="register()" *ngIf="!isLoading; else loading">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" 
+                       [(ngModel)]="registerData.username" name="username" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" 
+                       [(ngModel)]="registerData.email" name="email" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" 
+                       [(ngModel)]="registerData.password" name="password" required>
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" 
+                       [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
+              </div>
+              
+              <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+                {{ errorMessage }}
+              </div>
+              
+              <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
+            </form>
+  
+            <ng-template #loading>
+              <div class="text-center mt-3">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <p>Creating your account...</p>
+              </div>
+            </ng-template>
+  
+            <div class="text-center mt-3">
+              <a routerLink="/login">Already have an account? Login</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

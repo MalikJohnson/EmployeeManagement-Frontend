@@ -1,0 +1,50 @@
+<!-- Employee Dashboard -->
+<div *ngIf="employees?.length == 0" class="col-12">
+  <div class="alert alert-info">
+    <h4 class="alert-heading">No Employees Found</h4>
+    <p>Click "Add Employee" to create your first employee record.</p>
+  </div>
+</div>
+
+<!-- Employee Cards -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+  <div *ngFor="let employee of employees" class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">{{employee?.name}}</h5>
+      </div>
+      <div class="card-body">
+        <div class="text-center mb-3">
+          <img [src]="employee?.imageUrl || 'assets/default-user.png'" 
+               class="rounded-circle img-thumbnail" 
+               style="width: 100px; height: 100px; object-fit: cover;"
+               alt="Employee photo">
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span><i class="fa fa-briefcase me-2"></i>Position</span>
+            <span class="badge bg-primary rounded-pill">{{employee?.jobTitle}}</span>
+          </li>
+          <li class="list-group-item">
+            <i class="fa fa-envelope me-2"></i>{{employee?.email}}
+          </li>
+          <li class="list-group-item">
+            <i class="fa fa-phone me-2"></i>{{employee?.phone}}
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer bg-transparent">
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-sm btn-outline-primary" 
+                  (click)="openEditModal(employee)">
+            <i class="fa fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger" 
+                  (click)="openDeleteModal(employee)">
+            <i class="fa fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
