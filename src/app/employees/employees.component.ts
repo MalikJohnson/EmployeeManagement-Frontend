@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Employee } from '../employee';
@@ -8,8 +8,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddEmployeeModalComponent } from '../shared/add-employee-modal/add-employee-modal.component';
 import { EditEmployeeModalComponent } from '../shared/edit-employee-modal/edit-employee-modal.component';
 import { DeleteEmployeeModalComponent } from '../shared/delete-employee-modal/delete-employee-modal.component';
-import { EmployeeRefreshService } from '../shared-employee.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-employees',
@@ -18,9 +16,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.css']
 })
-export class EmployeesComponent implements OnInit, OnDestroy {
+export class EmployeesComponent implements OnInit {
   public employees: Employee[] = [];
-  private refreshSub!: Subscription;
   public tempEmployee: Employee = {
     id: 0,
     name: '',
@@ -35,19 +32,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   constructor(
     private employeeService: EmployeeService,
-    private modalService: NgbModal,
-    private refreshService: EmployeeRefreshService
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.getEmployees();
-    this.refreshSub = this.refreshService.refresh$.subscribe(() => {
-      this.getEmployees();
-    });
-  }
-
-  ngOnDestroy() {
-    this.refreshSub?.unsubscribe();
   }
 
   public getEmployees(): void {
